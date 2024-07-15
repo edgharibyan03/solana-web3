@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Веб-приложение для кошелька и транзакций Solana
 
-## Getting Started
+Этот проект представляет собой веб-приложение, созданное с использованием Next.js и Solana Web3.js для создания криптовалютного кошелька и выполнения транзакций в сети Devnet Solana. Приложение адаптировано для мобильных устройств и включает следующие функции:
+- Создание кошелька
+- Отображение баланса кошелька, публичного и приватного ключей
+- Отправка SOL на другой кошелёк
+- Обновление баланса в реальном времени с оповещениями о изменениях
 
-First, run the development server:
+## Необходимые условия
+
+Перед началом убедитесь, что у вас установлены следующие инструменты:
+- Node.js (>= 14.x)
+- npm (>= 6.x)
+
+## Начало работы
+
+### Клонирование репозитория
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/solana-wallet-app.git
+cd solana-wallet-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Установка зависимостей
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Билд приложения
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Запуск приложения локально
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Откройте браузер и перейдите по адресу http://localhost:3000.
 
-## Deploy on Vercel
+### Пополнение кошелька через CLI
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Установка Solana CLI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Обратитесь к официальной документации Solana для установки Solana CLI.
+
+### Пополнения кошелька
+
+solana airdrop 10 <WALLET_ADDRESS> --url https://api.devnet.solana.com
+
+### Подтверждение транзакции
+
+solana confirm <TRANSACTION_SIGNATURE> --url https://api.devnet.solana.com

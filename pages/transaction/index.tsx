@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, useCallback } from 'react';
 import { Connection, PublicKey, clusterApiUrl, Transaction, SystemProgram, Keypair, sendAndConfirmTransaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { WalletProps } from '@/app/interfaces/main';
+import { toast } from 'react-toastify';
 
 interface TransactionScreenProps {
   wallet: WalletProps,
@@ -35,9 +36,13 @@ const TransactionScreen: React.FC<TransactionScreenProps> = ({ wallet, handleSet
       await sendAndConfirmTransaction(connection, transaction, [fromWallet]);
 
       const newBalance = await connection.getBalance(fromWallet.publicKey);
-      handleSetBalance(newBalance / LAMPORTS_PER_SOL); // Convert from lamports to SOL
+      handleSetBalance(newBalance / LAMPORTS_PER_SOL);
+
+      toast.success('Транзакция выполнена успешно')
     } catch (error) {
       console.error('Transaction failed:', error);
+
+      toast.error('Транзакция не выполнена')
     } finally {
       setIsSending(false);
     }
@@ -53,31 +58,33 @@ const TransactionScreen: React.FC<TransactionScreenProps> = ({ wallet, handleSet
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <header className="flex justify-between w-full max-w-md p-4 bg-white shadow-md">
-        <button onClick={() => window.history.back()} className="px-4 py-2 font-semibold text-white bg-red-500 rounded hover:bg-red-600">
-          Назад
-        </button>
-        <div className="text-lg font-semibold text-black">Баланс: {balance} SOL</div>
-      </header>
-      <div className="flex flex-col items-center w-full max-w-md p-4 mt-4 bg-white shadow-md">
-        <input
-          type="number"
-          placeholder="Количество SOL"
-          value={amount}
-          onChange={handleAmountChange}
-          className="w-full p-2 mb-4 text-gray-700 bg-gray-200 rounded text-black"
-        />
-        <input
-          type="text"
-          placeholder="Адрес кошелька получателя"
-          value={recipient}
-          onChange={handleRecipientChange}
-          className="w-full p-2 mb-4 text-gray-700 bg-gray-200 rounded text-black"
-        />
-        <button onClick={sendTransaction} className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600">
-          Отправить
-        </button>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <div className="container max-[600px]:w-11/12 flex flex-col items-center justify-center">
+        <header className="flex justify-between w-full max-w-md p-4 bg-white shadow-md items-center">
+          <button onClick={() => window.history.back()} className="px-4 py-2 font-semibold text-white bg-red-500 rounded hover:bg-red-600">
+            Назад
+          </button>
+          <div className="text-lg font-semibold text-black">Баланс: {balance} SOL</div>
+        </header>
+        <div className="flex flex-col items-center w-full max-w-md p-4 mt-4 bg-white shadow-md">
+          <input
+            type="number"
+            placeholder="Количество SOL"
+            value={amount}
+            onChange={handleAmountChange}
+            className="w-full p-2 mb-4 text-gray-700 bg-gray-200 rounded text-black"
+          />
+          <input
+            type="text"
+            placeholder="Адрес кошелька получателя"
+            value={recipient}
+            onChange={handleRecipientChange}
+            className="w-full p-2 mb-4 text-gray-700 bg-gray-200 rounded text-black"
+          />
+          <button onClick={sendTransaction} disabled={isSending} className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600">
+            {isSending ? 'Отправка...' : 'Отправить'}
+          </button>
+        </div>
       </div>
     </div>
   );

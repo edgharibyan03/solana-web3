@@ -1,41 +1,48 @@
 import { useState, ChangeEvent, useCallback } from 'react';
-import { Connection, PublicKey, clusterApiUrl, Transaction, SystemProgram, Keypair, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Connection, PublicKey, clusterApiUrl, Transaction, SystemProgram, Keypair, sendAndConfirmTransaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { WalletProps } from '@/app/interfaces/main';
 
 interface TransactionScreenProps {
-  wallet: Keypair | null;
+  wallet: WalletProps,
+  balance: number,
+  handleSetBalance: (count: number) => void
 }
 
-const TransactionScreen: React.FC<TransactionScreenProps> = ({ wallet }) => {
+const TransactionScreen: React.FC<TransactionScreenProps> = ({ wallet, handleSetBalance, balance }) => {
   const [amount, setAmount] = useState<string>('');
   const [recipient, setRecipient] = useState<string>('');
-  const [balance, setBalance] = useState<number>(0);
+  const [isSending, setIsSending] = useState<boolean>(false);
 
   const sendTransaction = useCallback(async () => {
-    console.log(wallet);
 
-    if (!wallet) return;
+    setIsSending(true);
 
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: wallet.publicKey,
-        toPubkey: new PublicKey(recipient),
-        lamports: parseFloat(amount) * 1e9, // convert SOL to lamports
-      })
-    );
+    try {
+      const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 
-    // let keypair = Keypair.generate();
+      const fromWallet = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(wallet.privateKey)));
 
-    // sendAndConfirmTransaction(connection, transaction, [keypair]);
+      const toWallet = new PublicKey(recipient);
 
-    const signature = await connection.sendTransaction(transaction, [wallet]);
-    await connection.confirmTransaction(signature);
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: fromWallet.publicKey,
+          toPubkey: toWallet,
+          lamports: parseFloat(amount) * LAMPORTS_PER_SOL,
+        })
+      );
 
-    const updatedBalance = await connection.getBalance(wallet.publicKey);
-    console.log(updatedBalance);
+      await sendAndConfirmTransaction(connection, transaction, [fromWallet]);
 
-    setBalance(updatedBalance / 1e9); // convert lamports to SOL
-  }, [amount, recipient, wallet]);
+      const newBalance = await connection.getBalance(fromWallet.publicKey);
+      handleSetBalance(newBalance / LAMPORTS_PER_SOL); // Convert from lamports to SOL
+    } catch (error) {
+      console.error('Transaction failed:', error);
+    } finally {
+      setIsSending(false);
+    }
+
+  }, [wallet, recipient, amount]);
 
   const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);

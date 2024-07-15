@@ -45,7 +45,7 @@ npm run start
 
 ### Установка Solana CLI
 
-Обратитесь к официальной документации Solana для установки Solana CLI.
+Обратитесь к официальной документации Solana(https://solana.com/developers/guides/getstarted/setup-local-development) для установки Solana CLI.
 
 ### Пополнения кошелька
 ```bash

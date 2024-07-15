@@ -48,9 +48,10 @@ npm run start
 Обратитесь к официальной документации Solana для установки Solana CLI.
 
 ### Пополнения кошелька
-
+```bash
 solana airdrop 10 <WALLET_ADDRESS> --url https://api.devnet.solana.com
-
+```
 ### Подтверждение транзакции
-
+```bash
 solana confirm <TRANSACTION_SIGNATURE> --url https://api.devnet.solana.com
+```

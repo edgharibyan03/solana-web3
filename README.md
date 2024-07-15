@@ -17,8 +17,8 @@
 ### Клонирование репозитория
 
 ```bash
-git clone https://github.com/your-username/solana-wallet-app.git
-cd solana-wallet-app
+git clone https://github.com/edgharibyan03/solana-web3.git
+cd solana-web3
 ```
 
 ### Установка зависимостей
